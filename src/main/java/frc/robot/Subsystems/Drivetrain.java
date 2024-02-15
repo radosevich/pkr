@@ -4,22 +4,26 @@ package frc.robot.Subsystems;
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
 
+import edu.wpi.first.wpilibj.AnalogGyro;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
-import com.revrobotics.CANSparkLowLevel.MotorType;
-import com.revrobotics.CANSparkMax;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.DifferentialDriveKinematics;
 import edu.wpi.first.math.kinematics.DifferentialDriveOdometry;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj.SPI;
-import edu.wpi.first.wpilibj.drive.DifferentialDrive;
-import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.wpilibj.ADXRS450_Gyro;
+import edu.wpi.first.math.kinematics.DifferentialDriveWheelSpeeds;
+
+import com.revrobotics.CANSparkLowLevel.MotorType;
+import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
+
+import frc.robot.Constants;
 
 public class Drivetrain extends SubsystemBase {
-
   // Motors
   private final CANSparkMax m_rightLead = 
     new CANSparkMax(Constants.kRightLeadID, MotorType.kBrushless);
@@ -29,17 +33,95 @@ public class Drivetrain extends SubsystemBase {
     new CANSparkMax(Constants.kRightFollowID, MotorType.kBrushless);
   private final CANSparkMax m_leftFollow = 
     new CANSparkMax(Constants.kLeftFollowID, MotorType.kBrushless);
+
+  // Encoders
+  private RelativeEncoder m_leftEncoder;
+  private RelativeEncoder m_rightEncoder;
+
+  // Gyro
+  private final AnalogGyro m_gyro;
   
   // Differential Drive
   private final DifferentialDrive m_robotDrive = 
     new DifferentialDrive(m_rightLead, m_leftLead);
 
+  // PIDcontrollers
+  private final PIDController m_leftPIDController;
+  private final PIDController m_rightPIDController;
+
   // Kinematics and odometry
+  private final DifferentialDriveKinematics m_kinematics;
+  private final DifferentialDriveOdometry m_odometry;
+
+  private final SimpleMotorFeedforward m_feedforward;
+
+  private Translation2d m_translation;
 
   public Drivetrain() {
   //Creates a new drivetrain
+  System.out.println("Drivetrain()");
     m_leftFollow.follow(m_leftLead);
     m_rightFollow.follow(m_rightLead);
+
+    m_leftEncoder = m_leftLead.getEncoder();
+    m_rightEncoder = m_rightLead.getEncoder();
+
+    m_gyro = new AnalogGyro(0);
+
+    m_leftPIDController = new PIDController(8.5, 0, 0); 
+    m_rightPIDController = new PIDController(8.5, 0, 0);
+  
+    m_kinematics = new DifferentialDriveKinematics(Constants.kTrackWidth);
+    m_odometry = new DifferentialDriveOdometry(
+        m_gyro.getRotation2d(), 
+        m_leftEncoder.getPosition(), 
+        m_rightEncoder.getPosition());
+
+    m_feedforward = new SimpleMotorFeedforward(1, 3);
+  }
+
+  /** Sets speeds to the drivetrain motors. */
+  public void setSpeeds(DifferentialDriveWheelSpeeds speeds) {
+    var leftFeedforward = m_feedforward.calculate(speeds.leftMetersPerSecond);
+    var rightFeedforward = m_feedforward.calculate(speeds.rightMetersPerSecond);
+    double leftOutput = m_leftPIDController.calculate(
+      m_leftEncoder.getVelocity(), 
+      speeds.leftMetersPerSecond);
+    double rightOutput = m_rightPIDController.calculate(
+      m_rightEncoder.getVelocity(), 
+      speeds.rightMetersPerSecond);
+    m_leftLead.setVoltage(leftOutput + leftFeedforward);
+    m_rightLead.setVoltage(rightOutput + rightFeedforward);
+  } 
+
+  public void drivePercent(double left, double right) {
+    // Deadband gamepad 10%
+    if (Math.abs(left) < 0.1) {left = 0.0;}
+    if (Math.abs(right) < 0.1) {right = 0.0;}
+    m_leftLead.set(left);
+    m_rightLead.set(right);
+  }
+
+  /** Resets robot odometry. */
+  public void resetOdometry(Pose2d pose) {
+    m_odometry.resetPosition(
+      m_gyro.getRotation2d(), 
+      m_leftEncoder.getPosition(), 
+      m_rightEncoder.getPosition(), 
+      pose);
+  }
+
+  /** Update robot odometry. */
+  public void updateOdometry() {
+    m_odometry.update(
+      m_gyro.getRotation2d(), 
+      m_leftEncoder.getPosition(), 
+      m_rightEncoder.getPosition());
+  }
+
+  /** Check the current robot pose. */
+  public Pose2d getPose() {
+    return m_odometry.getPoseMeters();
   }
 
   public void manualDrive(double move, double turn) {

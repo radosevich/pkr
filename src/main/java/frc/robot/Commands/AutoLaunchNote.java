@@ -10,11 +10,12 @@ import frc.robot.Constants;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 
-public class LaunchNoteTeleop extends Command {
+public class AutoLaunchNote extends Command {
   private final Shooter m_shooter;
   private final Intake m_intake;
 
-  public LaunchNoteTeleop(Shooter shooter, Intake intake) {
+  public AutoLaunchNote(Shooter shooter, Intake intake) {
+    System.out.println("AutoLaunchNote()");
     m_shooter = shooter;
     m_intake = intake;
 
@@ -24,11 +25,13 @@ public class LaunchNoteTeleop extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_shooter.ShooterStart(Constants.kShooterSpeed);
+    m_intake.IntakeStop();
+    m_shooter.ShooterRun(Constants.kShooterLaunch);
     Timer.delay(0.5); // get up to steady speed
-    m_intake.IntakeIn(Constants.kIntakeSpeed);
+    m_intake.IntakeRun(Constants.kIntakeIn);
     Timer.delay(0.5); // wait for note to launch
-    m_intake.IntakeStop(); 
+    // shooter does not need to run but intake does in preparation
+    // for picking up the next note
     m_shooter.ShooterStop();
   }
 

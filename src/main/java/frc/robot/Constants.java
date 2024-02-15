@@ -9,7 +9,7 @@ package frc.robot;
  * constants. This class should not be used for any other purpose. All constants should be declared
  * globally (i.e. public static). Do not put anything functional in this class.
  *
- * <p>It is advised to statically import this class (or one of its inner classes) wherever the
+ * It is advised to statically import this class (or one of its inner classes) wherever the
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
@@ -17,22 +17,32 @@ public final class Constants {
 
     // Drivetrain Subsystem
     public static int kRightLeadID = 1; // CAN value of Right Lead Motor
-    public static int kLeftLeadID = 2; // CAN value of Left Lead Motor
-    public static int kRightFollowID = 3; // CAN value of Right Follow Motor
+    public static int kLeftLeadID = 3; // CAN value of Left Lead Motor
+    public static int kRightFollowID = 2; // CAN value of Right Follow Motor
     public static int kLeftFollowID = 4; // CAN value of Left Follow Motor
-    
+
+    public static final double kDriveSpeed = 3.0; // Update this with your desired drive speed
+    public static final double kMaxAngularSpeed = Math.PI; // Update this with your desired turn speed
+    public static final double kTrackWidth = 0.0508; // Update this with your desired track width
+    public static final double kWheelRadius = 0.0508; // Update this with your desired wheel radius
+    public static final double kEncoderResolution = 4096; // Update this with your desired resolution
+
     // Intake Subsystem
     public static int kHighIntakeID = 5; // CAN value of kHighIntakeID
     public static int kLowIntakeID = 6; // CAN value of kLowIntakeID
   
     public static final double kIntakeSpeed = -.75; // Update this with your desired intake speed
+    public static final double kIntakeIn = kIntakeSpeed;
+    public static final double kIntakeOut = -kIntakeSpeed;
 
     // Shooter Subsystem
     public static int kRightShooterID = 7; // CAN value of Right Shooter
     public static int kLeftShooterID = 8; // CAN value of Left Shooter
 
     public static final double kShooterSpeed = 0.25; // Update this with your desired shooter speed
-    
+    public static final double kShooterLaunch = kShooterSpeed;
+    public static final double kShooterEject = -kShooterSpeed;
+        
     // Controllers
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;

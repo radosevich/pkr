@@ -5,18 +5,20 @@
 package frc.robot;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.Joystick.ButtonType;
 import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.RunCommand;
-import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj.XboxController;
+import edu.wpi.first.wpilibj.XboxController.Button;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 
 import frc.robot.Commands.AutoDoNothing;
-import frc.robot.Commands.LaunchNoteAuto;
-import frc.robot.Commands.LaunchNoteTeleop;
+import frc.robot.Commands.AutoLaunchNote;
+import frc.robot.Commands.TeleopLaunchNote;
 
 import frc.robot.Subsystems.Climb;
 import frc.robot.Subsystems.Drivetrain;
@@ -25,19 +27,16 @@ import frc.robot.Subsystems.Shooter;
 
 public class RobotContainer {
   // The robot's subsystems
-  public final Drivetrain m_driveSubsystem = new Drivetrain();
+  private final Drivetrain m_driveSubsystem = new Drivetrain();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Climb m_climb = new Climb();
 
   // The robot's controllers
-  private final CommandXboxController m_driverController = 
-    new CommandXboxController(Constants.kDriverControllerPort);
+  private final XboxController m_driverController = 
+    new XboxController(Constants.kDriverControllerPort);
   private final Joystick m_operatorController = 
     new Joystick(Constants.kOperatorControllerPort);
-  private final JoystickButton m_triggerButton =
-    // 1 is usually the trigger 
-    new JoystickButton(m_operatorController, 1);
 
   // The robot's autonomous commands
   Command m_autonomousCommand;
@@ -47,20 +46,24 @@ public class RobotContainer {
   public final Field2d m_field = new Field2d();
 
   public RobotContainer() {
+    System.out.println("RobotContainer()");
+    // setup controller button bindings to commands
     configureBindings();
 
     // Teleop default command
     // Control the drive with split-stick arcade controls
     m_driveSubsystem.setDefaultCommand(
-      new RunCommand(() -> m_driveSubsystem.manualDrive(
+      new InstantCommand(() -> m_driveSubsystem.manualDrive(
         -m_driverController.getLeftY(), 
         -m_driverController.getRightX()), 
         m_driveSubsystem));
+    System.out.println("setDefaultCommand()");
     
     // Setup autonomous select commands
+    System.out.println("SendableChooser()");
     m_chooser = new SendableChooser<>();
     m_chooser.setDefaultOption("Do nothing", new AutoDoNothing());
-    m_chooser.addOption("LaunchNoteAuto", new LaunchNoteAuto(m_shooter, m_intake));
+    m_chooser.addOption("LaunchNoteAuto", new AutoLaunchNote(m_shooter, m_intake));
     //m_chooser.addOption("Autonomous Distance", new AutonomousDistance(m_drivetrain, m_Tebo));
     SmartDashboard.putData(m_chooser);
 
@@ -74,30 +77,32 @@ public class RobotContainer {
 
   private void configureBindings() {
   // Configure the button bindings
+  System.out.println("configureBindings()");
 
-    m_driverController.rightBumper()
+    new JoystickButton(m_driverController, Button.kRightBumper.value)
     // Intake note into the robot
-      .whileTrue(new RunCommand(() -> m_intake.IntakeIn(Constants.kIntakeSpeed)))
-      .onFalse(new RunCommand(() -> m_intake.IntakeStop()));
+      .onTrue(new InstantCommand(() -> m_intake.IntakeRun(Constants.kIntakeIn)))
+      .onFalse(new InstantCommand(() -> m_intake.IntakeStop()));
 
-    m_driverController.leftBumper()
-    // Reverse the intake direction
-      .whileTrue(new RunCommand(() -> m_intake.IntakeIn(-Constants.kIntakeSpeed)))
-      .onFalse(new RunCommand(() -> m_intake.IntakeStop()));
+    new JoystickButton(m_driverController, Button.kLeftBumper.value)
+    // Reverse the intake direction to clear a jam
+      .onTrue(new InstantCommand(() -> m_intake.IntakeRun(Constants.kIntakeOut)))
+      .onFalse(new InstantCommand(() -> m_intake.IntakeStop()));
 
-    m_driverController.a()
+    new JoystickButton(m_driverController, Button.kA.value)
     // Launch the note
-      .whileTrue(new RunCommand(() -> m_shooter.ShooterStart(Constants.kShooterSpeed)))
-      .onFalse(new RunCommand(() -> m_shooter.ShooterStop()));
+      .onTrue(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kShooterLaunch)))
+      .onFalse(new InstantCommand(() -> m_shooter.ShooterStop()));
 
-    m_driverController.b()
+    new JoystickButton(m_driverController, Button.kB.value)
     // Reverse the shooter in case of a jam
-      .whileTrue(new RunCommand(() -> m_shooter.ShooterBack(-Constants.kShooterSpeed)))
-      .onFalse(new RunCommand(() -> m_shooter.ShooterStop()));
+      .onTrue(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kShooterEject)))
+      .onFalse(new InstantCommand(() -> m_shooter.ShooterStop()));
 
-    // Bind the operator joystick trigger button to the shoot command
-    m_triggerButton
-      .onTrue(new LaunchNoteTeleop(m_shooter, m_intake));
+    new JoystickButton(m_operatorController, ButtonType.kTrigger.value)
+    // Bind the operator joystick trigger button to the launch command
+      .onTrue(new TeleopLaunchNote(m_shooter, m_intake));
+
   }
 
   public Command getAutonomousCommand() {

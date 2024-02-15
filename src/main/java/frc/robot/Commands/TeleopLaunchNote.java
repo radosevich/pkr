@@ -10,25 +10,32 @@ import frc.robot.Constants;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 
-public class LaunchNoteAuto extends Command {
+public class TeleopLaunchNote extends Command {
   private final Shooter m_shooter;
   private final Intake m_intake;
 
-  public LaunchNoteAuto(Shooter shooter, Intake intake) {
+  public TeleopLaunchNote(Shooter shooter, Intake intake) {
     m_shooter = shooter;
     m_intake = intake;
 
     addRequirements(m_shooter, m_intake);
   }
 
-  // Called when the command is initially scheduled.
+  
   @Override
   public void initialize() {
-    m_shooter.ShooterStart(Constants.kShooterSpeed);
-    Timer.delay(0.5); // get up to steady speed
-    m_intake.IntakeIn(Constants.kIntakeSpeed);
-    Timer.delay(0.5); // wait for note to launch
-    m_shooter.ShooterStop(); // shooter does not need to run but intake does
+  // Called when the command is initially scheduled.
+    // Start up launch motors
+    m_shooter.ShooterRun(Constants.kShooterLaunch);
+    // get up to steady speed
+    Timer.delay(0.5);
+    // start up intake motor
+    m_intake.IntakeRun(Constants.kIntakeIn);
+    // wait for note to launch
+    Timer.delay(0.5);
+    //stop all motors
+    m_intake.IntakeStop(); 
+    m_shooter.ShooterStop();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
