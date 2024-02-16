@@ -11,18 +11,18 @@ import com.ctre.phoenix.motorcontrol.can.WPI_TalonSRX;
 import frc.robot.Constants;
 
 public class Shooter extends SubsystemBase {
-    private final WPI_TalonSRX m_leftMotor;
-    private final WPI_TalonSRX m_rightMotor;
+  private final WPI_TalonSRX m_leftMotor;
+  private final WPI_TalonSRX m_rightMotor;
 
-    public Shooter() {
-    // Creates a new Shooter
-      m_leftMotor = new WPI_TalonSRX(Constants.kLeftShooterID);
-      m_rightMotor = new WPI_TalonSRX(Constants.kRightShooterID);
-    }
+  public Shooter() {
+  // Creates a new Shooter
+    m_leftMotor = new WPI_TalonSRX(Constants.kLeftShooterID);
+    m_rightMotor = new WPI_TalonSRX(Constants.kRightShooterID);
+  }
 
-    public void ShooterRun(double speed) {
-    // Set motor speed to launch, eject or stop
-      m_leftMotor.set(speed);
-      m_rightMotor.set(-speed); // Motors are facing opposite directions
-    }
+  public void ShooterRun(double speed) {
+  // Set motor speed to launch, eject or stop
+    m_leftMotor.set(speed);
+    m_rightMotor.set(-speed); // Motors are facing opposite directions
+  }
 }

@@ -13,12 +13,12 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
-    // Miscellanous
-    public static final double kStopSpeed = 0.0;
+// Miscellanous
+    public static final double kStopSpeed = 0.0; // stop motor speed
 
-    // Climb Subsystem
+// Climb Subsystem
 
-    // Drivetrain Subsystem
+// Drivetrain Subsystem
     public static int kRightLeadID = 1; // CAN value of Right Lead Motor
     public static int kLeftLeadID = 3; // CAN value of Left Lead Motor
     public static int kRightFollowID = 2; // CAN value of Right Follow Motor
@@ -30,7 +30,7 @@ public final class Constants {
     public static final double kWheelRadius = 0.0508; // Update this with your desired wheel radius
     public static final double kEncoderResolution = 4096; // Update this with your desired resolution
 
-    // Intake Subsystem
+// Intake Subsystem
     public static int kHighIntakeID = 5; // CAN value of kHighIntakeID
     public static int kLowIntakeID = 6; // CAN value of kLowIntakeID
   
@@ -38,7 +38,7 @@ public final class Constants {
     public static final double kIntakeIn = kIntakeSpeed;
     public static final double kIntakeOut = -kIntakeSpeed;
 
-    // Shooter Subsystem
+// Shooter Subsystem
     public static int kRightShooterID = 7; // CAN value of Right Shooter
     public static int kLeftShooterID = 8; // CAN value of Left Shooter
 
@@ -46,9 +46,7 @@ public final class Constants {
     public static final double kShooterLaunch = kShooterSpeed;
     public static final double kShooterEject = -kShooterSpeed;
         
-    // Controllers
+// Controllers
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
-
-    
 }
