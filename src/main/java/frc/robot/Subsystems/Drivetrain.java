@@ -59,7 +59,6 @@ public class Drivetrain extends SubsystemBase {
 
   public Drivetrain() {
   //Creates a new drivetrain
-  System.out.println("Drivetrain()");
     m_leftFollow.follow(m_leftLead);
     m_rightFollow.follow(m_rightLead);
 

@@ -34,8 +34,8 @@ public class TeleopLaunchNote extends Command {
     // wait for note to launch
     Timer.delay(0.5);
     //stop all motors
-    m_intake.IntakeStop(); 
-    m_shooter.ShooterStop();
+    m_intake.IntakeRun(Constants.kStopSpeed); 
+    m_shooter.ShooterRun(Constants.kStopSpeed);
   }
 
   // Called every time the scheduler runs while the command is scheduled.

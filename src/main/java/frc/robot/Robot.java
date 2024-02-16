@@ -16,7 +16,6 @@ public class Robot extends TimedRobot {
   @Override
   public void robotInit() {
     m_robotContainer = new RobotContainer();
-    System.out.println("RobotInit()");
   }
 
   @Override
@@ -26,7 +25,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void disabledInit() {
-    System.out.println("DisabledInit()");
   }
 
   @Override
@@ -37,7 +35,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void autonomousInit() {
-    System.out.println("AutonomousInit()");
     m_autonomousCommand = m_robotContainer.getAutonomousCommand();
 
     if (m_autonomousCommand != null) {
@@ -53,7 +50,6 @@ public class Robot extends TimedRobot {
 
   @Override
   public void teleopInit() {
-    System.out.println("TeleopInit()");
     if (m_autonomousCommand != null) {
       m_autonomousCommand.cancel();
     }

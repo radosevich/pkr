@@ -26,27 +26,26 @@ import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
 
 public class RobotContainer {
-  // The robot's subsystems
+// The robot's subsystems
   private final Drivetrain m_driveSubsystem = new Drivetrain();
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Climb m_climb = new Climb();
 
-  // The robot's controllers
+// The robot's controllers
   private final XboxController m_driverController = 
     new XboxController(Constants.kDriverControllerPort);
   private final Joystick m_operatorController = 
     new Joystick(Constants.kOperatorControllerPort);
 
-  // The robot's autonomous commands
+// The robot's autonomous commands
   Command m_autonomousCommand;
   SendableChooser<Command> m_chooser;
 
-  // Representation of game field
+// Representation of game field
   public final Field2d m_field = new Field2d();
 
   public RobotContainer() {
-    System.out.println("RobotContainer()");
     // setup controller button bindings to commands
     configureBindings();
 
@@ -57,47 +56,37 @@ public class RobotContainer {
         -m_driverController.getLeftY(), 
         -m_driverController.getRightX()), 
         m_driveSubsystem));
-    System.out.println("setDefaultCommand()");
     
     // Setup autonomous select commands
-    System.out.println("SendableChooser()");
     m_chooser = new SendableChooser<>();
     m_chooser.setDefaultOption("Do nothing", new AutoDoNothing());
     m_chooser.addOption("LaunchNoteAuto", new AutoLaunchNote(m_shooter, m_intake));
     //m_chooser.addOption("Autonomous Distance", new AutonomousDistance(m_drivetrain, m_Tebo));
     SmartDashboard.putData(m_chooser);
-
-    if (RobotBase.isReal()) {
-      System.out.println("Running in a real environment");
-    } else {
-      System.out.println("Running in a simulated environment");
-      SmartDashboard.putData("Field", m_field);
-    }
   }
 
   private void configureBindings() {
   // Configure the button bindings
-  System.out.println("configureBindings()");
 
     new JoystickButton(m_driverController, Button.kRightBumper.value)
     // Intake note into the robot
       .onTrue(new InstantCommand(() -> m_intake.IntakeRun(Constants.kIntakeIn)))
-      .onFalse(new InstantCommand(() -> m_intake.IntakeStop()));
+      .onFalse(new InstantCommand(() -> m_intake.IntakeRun(Constants.kStopSpeed)));
 
     new JoystickButton(m_driverController, Button.kLeftBumper.value)
     // Reverse the intake direction to clear a jam
       .onTrue(new InstantCommand(() -> m_intake.IntakeRun(Constants.kIntakeOut)))
-      .onFalse(new InstantCommand(() -> m_intake.IntakeStop()));
+      .onFalse(new InstantCommand(() -> m_intake.IntakeRun(Constants.kStopSpeed)));
 
     new JoystickButton(m_driverController, Button.kA.value)
     // Launch the note
       .onTrue(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kShooterLaunch)))
-      .onFalse(new InstantCommand(() -> m_shooter.ShooterStop()));
+      .onFalse(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kStopSpeed)));
 
     new JoystickButton(m_driverController, Button.kB.value)
     // Reverse the shooter in case of a jam
       .onTrue(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kShooterEject)))
-      .onFalse(new InstantCommand(() -> m_shooter.ShooterStop()));
+      .onFalse(new InstantCommand(() -> m_shooter.ShooterRun(Constants.kStopSpeed)));
 
     new JoystickButton(m_operatorController, ButtonType.kTrigger.value)
     // Bind the operator joystick trigger button to the launch command

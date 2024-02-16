@@ -13,20 +13,14 @@ public class Intake extends SubsystemBase {
 
   public Intake() {
   /** Creates a new Intake. */
-  System.out.println("Intake()");
     m_highintake = new CANSparkMax(Constants.kHighIntakeID, MotorType.kBrushless);
     m_lowintake = new CANSparkMax(Constants.kLowIntakeID, MotorType.kBrushless);
   }
   
   public void IntakeRun(double speed) {
-  //start motors to intake or eject note depending on sign of speed
+  //set motor speed  to intake,eject or stop
     m_highintake.set(-speed);
     m_lowintake.set(speed);
-  }
-
-  public void IntakeStop() {
-    m_highintake.set(0);
-    m_lowintake.set(0);
   }
 }
    

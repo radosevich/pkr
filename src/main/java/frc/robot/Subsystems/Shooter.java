@@ -16,20 +16,13 @@ public class Shooter extends SubsystemBase {
 
     public Shooter() {
     // Creates a new Shooter
-    System.out.println("Shooter()");
       m_leftMotor = new WPI_TalonSRX(Constants.kLeftShooterID);
       m_rightMotor = new WPI_TalonSRX(Constants.kRightShooterID);
     }
 
     public void ShooterRun(double speed) {
-    // Start motors to launch or eject note depending on sign of speed
+    // Set motor speed to launch, eject or stop
       m_leftMotor.set(speed);
       m_rightMotor.set(-speed); // Motors are facing opposite directions
-    }
-
-    public void ShooterStop() {
-    // Stop motors
-      m_leftMotor.stopMotor();
-      m_rightMotor.stopMotor();
     }
 }

@@ -44,7 +44,6 @@ public class AutoMove extends Command {
     Drivetrain drivetrain, 
     int waypointIndex,
     boolean direction) {
-      System.out.println("AutoMove()");
       m_drivetrain = drivetrain;
       addRequirements(m_drivetrain);
 
@@ -60,11 +59,9 @@ public class AutoMove extends Command {
     TrajectoryConfig m_config = new TrajectoryConfig(2, 2);
 
     if (m_direction==kForward) {
-      System.out.println("Move.initialize(kForward)");
       m_startPoseIndex = 0;
       m_finalPoseIndex = 1;
     } else {
-      System.out.println("Move.initialize(kReverse)");
       m_startPoseIndex = 1;
       m_finalPoseIndex = 0;
       m_config.setReversed(true);
@@ -87,12 +84,10 @@ public class AutoMove extends Command {
     
     ChassisSpeeds speeds = m_ramsete.calculate(m_drivetrain.getPose(), reference);
     m_drivetrain.manualDrive(speeds.vxMetersPerSecond, speeds.omegaRadiansPerSecond);
-    //System.out.println("Move.execute(" + m_drivetrain.getPose() + ")");
   }
 
   @Override
   public void end(boolean interrupted) {
-    System.out.println("Move.end(" + interrupted + ")");
     m_drivetrain.manualDrive(0, 0);
   }
 

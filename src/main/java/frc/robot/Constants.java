@@ -13,6 +13,9 @@ package frc.robot;
  * constants are needed, to reduce verbosity.
  */
 public final class Constants {
+    // Miscellanous
+    public static final double kStopSpeed = 0.0;
+
     // Climb Subsystem
 
     // Drivetrain Subsystem
