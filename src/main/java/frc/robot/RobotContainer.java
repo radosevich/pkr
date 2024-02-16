@@ -90,7 +90,6 @@ public class RobotContainer {
     new JoystickButton(m_operatorController, ButtonType.kTrigger.value)
     // Bind the operator joystick trigger button to the launch command
       .onTrue(new TeleopLaunchNote(m_shooter, m_intake));
-
   }
 
   public Command getAutonomousCommand() {

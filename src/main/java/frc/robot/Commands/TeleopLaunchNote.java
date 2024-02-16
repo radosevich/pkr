@@ -14,6 +14,8 @@ public class TeleopLaunchNote extends Command {
   private final Shooter m_shooter;
   private final Intake m_intake;
 
+  private boolean done;
+
   public TeleopLaunchNote(Shooter shooter, Intake intake) {
     m_shooter = shooter;
     m_intake = intake;
@@ -25,6 +27,12 @@ public class TeleopLaunchNote extends Command {
   @Override
   public void initialize() {
   // Called when the command is initially scheduled.
+    done = false;
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
     // Start up launch motors
     m_shooter.ShooterRun(Constants.kShooterLaunch);
     // get up to steady speed
@@ -36,11 +44,7 @@ public class TeleopLaunchNote extends Command {
     //stop all motors
     m_intake.IntakeRun(Constants.kStopSpeed); 
     m_shooter.ShooterRun(Constants.kStopSpeed);
-  }
-
-  // Called every time the scheduler runs while the command is scheduled.
-  @Override
-  public void execute() {
+    done = true;
   }
 
   // Called once the command ends or is interrupted.
@@ -50,6 +54,10 @@ public class TeleopLaunchNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (done) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }

@@ -14,6 +14,8 @@ public class AutoLaunchNote extends Command {
   private final Shooter m_shooter;
   private final Intake m_intake;
 
+  private boolean done;
+
   public AutoLaunchNote(Shooter shooter, Intake intake) {
     m_shooter = shooter;
     m_intake = intake;
@@ -24,19 +26,19 @@ public class AutoLaunchNote extends Command {
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_intake.IntakeRun(Constants.kStopSpeed);
-    m_shooter.ShooterRun(Constants.kShooterLaunch);
-    Timer.delay(0.5); // get up to steady speed
-    m_intake.IntakeRun(Constants.kIntakeIn);
-    Timer.delay(0.5); // wait for note to launch
-    // shooter does not need to run but intake does in preparation
-    // for picking up the next note
-    m_shooter.ShooterRun(Constants.kStopSpeed);
+    done = false;
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    m_intake.IntakeRun(Constants.kStopSpeed);
+    m_shooter.ShooterRun(Constants.kShooterLaunch);
+    m_intake.IntakeRun(Constants.kIntakeIn);
+    // shooter does not need to run but intake does in preparation
+    // for picking up the next note
+    m_shooter.ShooterRun(Constants.kStopSpeed);
+    done = true;
   }
 
   // Called once the command ends or is interrupted.
@@ -46,6 +48,10 @@ public class AutoLaunchNote extends Command {
   // Returns true when the command should end.
   @Override
   public boolean isFinished() {
-    return false;
+    if (done) {
+      return true;
+    } else {
+      return false;
+    }
   }
 }
