@@ -39,6 +39,7 @@ public class AutoLaunchNote extends Command {
     // for picking up the next note
     m_shooter.ShooterRun(Constants.kStopSpeed);
     done = true;
+    
   }
 
   // Called once the command ends or is interrupted.

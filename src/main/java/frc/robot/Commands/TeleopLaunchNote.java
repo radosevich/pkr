@@ -35,12 +35,8 @@ public class TeleopLaunchNote extends Command {
   public void execute() {
     // Start up launch motors
     m_shooter.ShooterRun(Constants.kShooterLaunch);
-    // get up to steady speed
-    Timer.delay(0.5);
     // start up intake motor
     m_intake.IntakeRun(Constants.kIntakeIn);
-    // wait for note to launch
-    Timer.delay(0.5);
     //stop all motors
     m_intake.IntakeRun(Constants.kStopSpeed); 
     m_shooter.ShooterRun(Constants.kStopSpeed);
