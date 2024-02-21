@@ -23,6 +23,7 @@ import frc.robot.Subsystems.Climb;
 import frc.robot.Subsystems.Drivetrain;
 import frc.robot.Subsystems.Intake;
 import frc.robot.Subsystems.Shooter;
+import frc.robot.Subsystems.Camera;
 
 public class RobotContainer {
 // The robot's subsystems
@@ -30,6 +31,7 @@ public class RobotContainer {
   private final Intake m_intake = new Intake();
   private final Shooter m_shooter = new Shooter();
   private final Climb m_climb = new Climb();
+  private final Camera m_camera = new Camera();
 
 // The robot's controllers
   private final XboxController m_driverController = 

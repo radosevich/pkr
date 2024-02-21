@@ -49,4 +49,8 @@ public final class Constants {
 // Controllers
     public static final int kDriverControllerPort = 0;
     public static final int kOperatorControllerPort = 1;
+
+// Cameras
+  public static final int cameraPort = 1;
+  public static final int rampcameraPort = 0;
 }
